@@ -36,7 +36,7 @@ public class DynamicArray<T> implements List<T>{
             throw new IllegalArgumentException("input argument is null");
         data[size] = element;
         size = size+1;
-        ensureCapacity() ;
+        ensureCapacity();
     }
 
     // ensures that data has the capacity to hold additional elements
