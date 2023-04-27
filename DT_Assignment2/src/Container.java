@@ -6,7 +6,6 @@ public class Container{
     //Don't delete or change this function
     public Point getData()
     {
-        System.out.println("g");
         return data;
     }
 }
