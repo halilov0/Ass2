@@ -3,10 +3,12 @@
 public class Container{
     private Point data;//Don't delete or change this field;
 
+    public Container(Point point){
+        this.data = point;
+    }
     //Don't delete or change this function
     public Point getData()
     {
-        System.out.println("g");
         return data;
     }
 }
