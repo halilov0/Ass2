@@ -1,3 +1,4 @@
+import java.util.Iterator;
 
 public class DataStructure implements DT {
 
@@ -115,7 +116,47 @@ public class DataStructure implements DT {
 
     @Override
     public Point[] getPointsInRangeOppAxis(int min, int max, Boolean axis) {
-       return this.getPointsInRangeRegAxis(min, max, !axis);
+        int count = 0;
+        if(axis){
+            Iterator<Point> it1 = yAxis.iterator();
+            while(it1.hasNext()){
+                Point p = it1.next();
+                if (p.getX()>=min & p.getX()<=max)
+                    count++;
+            }
+
+            Point[] ans = new Point[count];
+            int i =0;
+            Iterator<Point> it2 = yAxis.iterator();
+            while(it2.hasNext()){
+                Point p = it2.next();
+                if((p.getX()>=min & p.getX()<=max)){
+                    ans[i] = p;
+                    i++;
+                }
+            }
+            return ans;
+        }
+        else{
+            Iterator<Point> it1 = xAxis.iterator();
+            while(it1.hasNext()){
+                Point p = it1.next();
+                if (p.getY()>=min & p.getY()<=max)
+                    count++;
+            }
+
+            Point[] ans = new Point[count];
+            int i =0;
+            Iterator<Point> it2 = xAxis.iterator();
+            while(it2.hasNext()){
+                Point p = it2.next();
+                if((p.getY()>=min & p.getY()<=max)){
+                    ans[i] = p;
+                    i++;
+                }
+            }
+            return ans;
+        }
     }
 
     @Override
@@ -210,9 +251,47 @@ public class DataStructure implements DT {
             max = container.getData().getY() + ((int) (width/2));
         }
         Point[] arr = getPointsInRangeRegAxis(min, max, axis);
+        int len = arr.length;
+        Point[] ans = new Point[2];
+
+        if(len == 2)
+            return arr;
+
+        if(len == 3) {
+            double a = Math.sqrt(Math.pow((arr[0].getX() - arr[1].getX()),2) +
+                    Math.pow((arr[0].getY() - arr[1].getY()),2) ); //distance between the points 0 and 1
+
+            double b = Math.sqrt(Math.pow((arr[0].getX() - arr[2].getX()),2) +
+                    Math.pow((arr[0].getY() - arr[2].getY()),2) ); //distance between the points 0 and 2
+
+            double c = Math.sqrt(Math.pow((arr[2].getX() - arr[1].getX()),2) +
+                    Math.pow((arr[2].getY() - arr[1].getY()),2) ); //distance between the points 1
+            double minVal = Math.min(a,Math.min(b,c));
+            if(minVal == a){
+                ans[0] = arr[0];
+                ans[1] = arr[1];
+            }
+            else if (minVal == b) {
+                ans[0] = arr[0];
+                ans[1] = arr[2];
+            }
+            else{
+                ans[0] = arr[1];
+                ans[1] = arr[2];
+            }
+            return ans;
+        }
+
+        Point p = arr[len/2];
+        Point[] =
+
+
+
+
+
         // מערך עם שני איברים, במקום ה0 יהיה הקרוב ביותר לקונטיינר, איבר 1 יהיה הקרוב פחות
-        double big; // המרחק של הקרוב פחות
-        double small; // המרחק של הקרוב ביותר
+        // המרחק של הקרוב פחות
+        // המרחק של הקרוב ביותר
         return null;
     }
 
@@ -223,6 +302,61 @@ public class DataStructure implements DT {
     }
 
 
+
+
+    public Point[] close(Point[] arr,int start, int end){
+        int  n = arr.length;
+        Point[] ans = new Point[2];
+
+        if(n==2){
+            return arr;
+        }
+
+        if(n==3){
+            double a = Math.sqrt(Math.pow((arr[0].getX() - arr[1].getX()),2) +
+                    Math.pow((arr[0].getY() - arr[1].getY()),2) ); //distance between the points 0 and 1
+
+            double b = Math.sqrt(Math.pow((arr[0].getX() - arr[2].getX()),2) +
+                    Math.pow((arr[0].getY() - arr[2].getY()),2) ); //distance between the points 0 and 2
+
+            double c = Math.sqrt(Math.pow((arr[2].getX() - arr[1].getX()),2) +
+                    Math.pow((arr[2].getY() - arr[1].getY()),2) ); //distance between the points 1
+            double minVal = Math.min(a,Math.min(b,c));
+            if(minVal == a){
+                ans[0] = arr[0];
+                ans[1] = arr[1];
+            }
+            else if (minVal == b) {
+                ans[0] = arr[0];
+                ans[1] = arr[2];
+            }
+            else{
+                ans[0] = arr[1];
+                ans[1] = arr[2];
+            }
+            return ans;
+        }
+
+        int med = n/2;
+        Point[] left = close(arr,0,med);
+        Point[] right = close(arr,med+1,n);
+
+        double dis1 = distance(left[0],left[1]);
+        double dis2 = distance(right[0],right[1]);
+
+        if (dis1 == Math.Min(dis1,dis2)){
+            return left;
+        }
+        else{
+            return right;
+        }
+    }
+
+    //returns distance between two points
+    public double distance(Point p1, Point p2){
+        double ans = Math.sqrt((Math.pow(p1.getX() - p2.getX(),2)) + (Math.pow(p1.getY() - p2.getY(),2) ));
+        return ans;
+    }
     //TODO: add members, methods, etc.
 
 }
