@@ -238,8 +238,7 @@ public class DataStructure implements DT {
     }
 
     @Override
-    public Point[] nearestPairInStrip(Container container, double width,
-                                      Boolean axis) {
+    public Point[] nearestPairInStrip(Container container, double width, Boolean axis) {
         int min;
         int max;
         if(axis){
@@ -254,109 +253,199 @@ public class DataStructure implements DT {
         int len = arr.length;
         Point[] ans = new Point[2];
 
-        if(len == 2)
-            return arr;
-
-        if(len == 3) {
-            double a = Math.sqrt(Math.pow((arr[0].getX() - arr[1].getX()),2) +
-                    Math.pow((arr[0].getY() - arr[1].getY()),2) ); //distance between the points 0 and 1
-
-            double b = Math.sqrt(Math.pow((arr[0].getX() - arr[2].getX()),2) +
-                    Math.pow((arr[0].getY() - arr[2].getY()),2) ); //distance between the points 0 and 2
-
-            double c = Math.sqrt(Math.pow((arr[2].getX() - arr[1].getX()),2) +
-                    Math.pow((arr[2].getY() - arr[1].getY()),2) ); //distance between the points 1
-            double minVal = Math.min(a,Math.min(b,c));
-            if(minVal == a){
-                ans[0] = arr[0];
-                ans[1] = arr[1];
-            }
-            else if (minVal == b) {
-                ans[0] = arr[0];
-                ans[1] = arr[2];
-            }
-            else{
-                ans[0] = arr[1];
-                ans[1] = arr[2];
-            }
-            return ans;
+        if(len<2){
+            return new Point[2];
         }
-
-        Point p = arr[len/2];
-        Point[] =
-
+        if(len == 2 || len == 3)
+            return twoOrthree(arr);
 
 
-
-
-        // מערך עם שני איברים, במקום ה0 יהיה הקרוב ביותר לקונטיינר, איבר 1 יהיה הקרוב פחות
-        // המרחק של הקרוב פחות
-        // המרחק של הקרוב ביותר
-        return null;
-    }
-
-    @Override
-    public Point[] nearestPair() {
-        // TODO Auto-generated method stub
-        return null;
+        return Afind(arr);
     }
 
 
-
-
-    public Point[] close(Point[] arr,int start, int end){
-        int  n = arr.length;
-        Point[] ans = new Point[2];
-
-        if(n==2){
-            return arr;
-        }
-
-        if(n==3){
-            double a = Math.sqrt(Math.pow((arr[0].getX() - arr[1].getX()),2) +
-                    Math.pow((arr[0].getY() - arr[1].getY()),2) ); //distance between the points 0 and 1
-
-            double b = Math.sqrt(Math.pow((arr[0].getX() - arr[2].getX()),2) +
-                    Math.pow((arr[0].getY() - arr[2].getY()),2) ); //distance between the points 0 and 2
-
-            double c = Math.sqrt(Math.pow((arr[2].getX() - arr[1].getX()),2) +
-                    Math.pow((arr[2].getY() - arr[1].getY()),2) ); //distance between the points 1
-            double minVal = Math.min(a,Math.min(b,c));
-            if(minVal == a){
-                ans[0] = arr[0];
-                ans[1] = arr[1];
-            }
-            else if (minVal == b) {
-                ans[0] = arr[0];
-                ans[1] = arr[2];
-            }
-            else{
-                ans[0] = arr[1];
-                ans[1] = arr[2];
-            }
-            return ans;
-        }
-
-        int med = n/2;
-        Point[] left = close(arr,0,med);
-        Point[] right = close(arr,med+1,n);
-
-        double dis1 = distance(left[0],left[1]);
-        double dis2 = distance(right[0],right[1]);
-
-        if (dis1 == Math.Min(dis1,dis2)){
-            return left;
-        }
-        else{
-            return right;
-        }
-    }
 
     //returns distance between two points
     public double distance(Point p1, Point p2){
         double ans = Math.sqrt((Math.pow(p1.getX() - p2.getX(),2)) + (Math.pow(p1.getY() - p2.getY(),2) ));
         return ans;
     }
-    //TODO: add members, methods, etc.
+
+    public Point[] Afind(Point[] arr){
+        Point[] ans = new Point[2];
+        int len = arr.length;
+
+
+        if(len == 2 || len==3) {
+            return twoOrthree(arr); //function to base scenarios
+        }
+
+        int mid = len/2;
+
+        Point[] left = new Point[mid];
+        Point[] right = new Point[len - mid];
+        for(int i=0;i<mid;i++){ //initializing left array
+            left[i] = arr[i];
+        }
+        for(int i=0;i<len - mid;i++){ //initializing right array
+            right[i] = arr[i + mid];
+        }
+
+        left = Afind(left);
+        right = Afind(right);
+
+
+        double disLeft = distance(left[0],left[1]);
+        double disRight = distance(right[0],right[1]);
+        double min = Math.min(disLeft,disRight);
+        int int_min = (int) min;
+
+        if(disLeft==min){
+            ans[0] = left[0];
+            ans[1] = left[1];
+        }
+        else {
+            ans[0] = right[0];
+            ans[1] = right[1];
+        }
+
+        Point mid_array = arr[mid];
+        Point[] xcheck = getPointsInRangeRegAxis(mid_array.getX() -int_min,mid_array.getX() + int_min,true );
+        Point[] ycheck = getPointsInRangeRegAxis(mid_array.getY() - int_min,mid_array.getY() + int_min,false);
+
+
+        int i=0;//index of the mid in the xcheck array
+        int j=0; //index of the mid in the ycheck array
+        while(xcheck[i]!=mid_array)//found where mid array in xcheck array
+        {
+            i++;
+        }
+        while(ycheck[j]!=mid_array)//found where mid array in ycheck array
+        {
+            j++;
+        }
+
+        int i1; //for checking 3 points before and after in x axis
+        int j1; //for checking 3 points before and after in y axis
+
+        for(i1=-3;i1<4;i1++){
+            if (i1==0){
+                i1++;//dont check the same point
+            }
+            int index = i+i1;
+            if(index>=0 & index<xcheck.length){
+                double temp_dis = distance(mid_array,xcheck[index]);
+                if(temp_dis<min){
+                    min = temp_dis;
+                    ans[0] = mid_array;
+                    ans[1] = xcheck[index];
+                }
+            }
+        }
+
+        for (j1 = -3;j1<4;j1++){
+            if (j1==0){
+                j1++;//dont check the same point
+            }
+            int index = j+j1;
+            if(index>=0 & index<ycheck.length){
+                double temp_dis = distance(mid_array,ycheck[index]);
+                if(temp_dis<min){
+                    min = temp_dis;
+                    ans[0] = mid_array;
+                    ans[1] = ycheck[index];
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    //Base scenarios of an array with two or three points only!
+    public Point[] twoOrthree(Point[] arr){
+        int n = arr.length;
+        if(n==2) return arr;
+        else {
+            Point[] ans = new Point[2];
+            double a = Math.sqrt(Math.pow((arr[0].getX() - arr[1].getX()),2) +
+                    Math.pow((arr[0].getY() - arr[1].getY()),2) ); //distance between the points 0 and 1
+
+            double b = Math.sqrt(Math.pow((arr[0].getX() - arr[2].getX()),2) +
+                    Math.pow((arr[0].getY() - arr[2].getY()),2) ); //distance between the points 0 and 2
+
+            double c = Math.sqrt(Math.pow((arr[2].getX() - arr[1].getX()),2) +
+                    Math.pow((arr[2].getY() - arr[1].getY()),2) ); //distance between the points 1
+            double minVal = Math.min(a,Math.min(b,c));
+            if(minVal == a){
+                ans[0] = arr[0];
+                ans[1] = arr[1];
+            }
+            else if (minVal == b) {
+                ans[0] = arr[0];
+                ans[1] = arr[2];
+            }
+            else{
+                ans[0] = arr[1];
+                ans[1] = arr[2];
+            }
+            return ans;
+        }
+    }
+
+
+
+
+    @Override
+    public Point[] nearestPair() {
+        //Step 1
+        int n = xAxis.size();
+        if(n<=1){
+            return new Point[2];
+        }
+        if(n==2 | n==3){
+            int min = xAxis.getFirst().getData().getX();
+            int max = xAxis.getLast().getData().getX();
+            return twoOrthree(getPointsInRangeRegAxis(min,max,true));
+        }
+
+        //Step 2
+        boolean axis = getLargestAxis();
+
+        //Step 3
+        Container mid = getMedian(axis);
+
+        //Step 4
+        Point[] ans;
+        if(axis){
+            int left = mid.getData().getX() - xAxis.getFirst().getData().getX();
+            int right = xAxis.getLast().getData().getX() - mid.getData().getX();
+            int max = Math.max(left,right);
+            ans = nearestPairInStrip(mid,((double)max)*2,axis); //because the function we call divide the width by 2
+        }
+        else {
+            int left = mid.getData().getY() - yAxis.getFirst().getData().getY();
+            int right = yAxis.getLast().getData().getY() - mid.getData().getY();
+            int max = Math.max(left,right);
+            ans = nearestPairInStrip(mid,((double)max)*2,axis); //because the function we call divide the width by 2
+        }
+
+        //Step 5
+        double minDist = distance(ans[0],ans[1]);
+
+        //Step 6
+        Point[] check = nearestPairInStrip(mid,2*minDist,axis);
+
+        //Step 6 : A
+        if(check[0] != null) {
+            double temp_dis = distance(check[0], check[1]);
+            if (temp_dis < minDist) {
+                return check;
+            }
+        }
+        //Step 6 : B
+        return ans;
+    }
+
+
 
 }
