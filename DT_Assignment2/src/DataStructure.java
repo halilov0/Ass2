@@ -1,4 +1,6 @@
 import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class DataStructure implements DT {
 
@@ -19,6 +21,13 @@ public class DataStructure implements DT {
         Link<Point> y = addYPoint(point);
         x.setPar(y);
         y.setPar(x);
+
+        if(point.getX()==2)
+        {
+            System.out.println(x.getPar());
+            System.out.println(x.getPrev().getPar());
+        }
+
     }
 
     public Link<Point> addXPoint(Point point) {
@@ -35,11 +44,19 @@ public class DataStructure implements DT {
                 curr = curr.getNext();
             }
             if (curr == null){
+                xAxis.sizeBy1();
+                xAxis.setLast(newLink);
                 prev.setNext(newLink);
+                newLink.setPrev(prev);
+            }
+            else if (curr == prev) {
+                xAxis.addFirst(newLink.getData());
             }
             else {
+                xAxis.sizeBy1();
                 prev.setNext(newLink);
                 newLink.setNext(curr);
+                newLink.setPrev(prev);
             }
             return newLink;
         }
@@ -59,11 +76,19 @@ public class DataStructure implements DT {
                 curr = curr.getNext();
             }
             if (curr == null){
+                yAxis.sizeBy1();
+                yAxis.setLast(newLink);
                 prev.setNext(newLink);
+                newLink.setPrev(prev);
             }
-            else {
+            else if (curr == prev) {
+                yAxis.addFirst(newLink.getData());
+            }
+             else {
+                 yAxis.sizeBy1();
                 prev.setNext(newLink);
                 newLink.setNext(curr);
+                newLink.setPrev(prev);
             }
             return newLink;
         }
@@ -110,6 +135,7 @@ public class DataStructure implements DT {
                ans[i] = start.getData();
                start = start.getNext();
            }
+           System.out.println(xAxis.getFirst().getPar());
            return ans;
        }
     }
@@ -162,53 +188,110 @@ public class DataStructure implements DT {
     @Override
     public double getDensity() {
         double ans;
-        int n = xAxis.getSize();
+        double n = (double) xAxis.getSize();
         int xMin = xAxis.getFirst().getData().getX();
         int xMax = xAxis.getLast().getData().getX();
         int yMin = yAxis.getFirst().getData().getY();
         int yMax = yAxis.getLast().getData().getY();
         int disX = xMax - xMin;
+        double dX = (double) disX;
         int disY = yMax - yMin;
+        double dY = (double) disY;
+
         ans = n/(disX*disY);
         return ans;
     }
 
     @Override
     public void narrowRange(int min, int max, Boolean axis) {
-        Point[] arr = getPointsInRangeRegAxis(min, max, axis);
         if(axis){
-            Link<Point> last = xAxis.getLink(arr[arr.length-1]);
+            Link<Point> last = xAxis.getLast();
             Link<Point> first = xAxis.getFirst();
-            while (first.getData().getX() != arr[0].getX()){
-                xAxis.remove(0);
-                yAxis.remove(first.getData());
+
+            while (first != null && first.getData().getX() < min){
+
+                if(first.getPar().getNext()!= null) {
+                    first.getPar().getNext().setPrev(first.getPar().getPrev());
+                }
+                if(first.getPar().getPrev()!=null) {
+                    first.getPar().getPrev().setNext(first.getPar().getNext());
+                }
+                if(first.getNext()!=null) {
+                    first.getNext().setPrev(null);
+                }
+
+                if (first.getPar() == yAxis.getLast()){
+                    yAxis.setLast(first.getPar().getPrev());
+                }
+                xAxis.setFirst(first.getNext());
+                xAxis.sizeMinus1();
+                yAxis.sizeMinus1();
                 first = first.getNext();
             }
-            last = last.getNext();
+
             Link<Point> end = last;
-            while (last != null){
-                yAxis.remove(last.getData());
-                last = last.getNext();
+            while (last != null && last.getData().getX() > max){
+
+                if(last.getPar().getNext()!=null) {
+                    last.getPar().getNext().setPrev(last.getPar().getPrev());
+                }
+                if(last.getPar().getPrev()!=null) {
+                    last.getPar().getPrev().setNext(last.getPar().getNext());
+                }
+                if(last.getPrev()!=null) {
+                    last.getPrev().setNext(null);
+                }
+                if(last.getPar() == yAxis.getFirst()){
+                    yAxis.setFirst(last.getPar().getNext());
+                }
+                xAxis.setLast(last.getPrev());
+                xAxis.sizeMinus1();
+                yAxis.sizeMinus1();
+                last = last.getPrev();
             }
-            xAxis.setLast(end);
-            end.setNext(null);
         }
         else{
-            Link<Point> last = yAxis.getLink(arr[arr.length-1]);
+            Link<Point> last = yAxis.getLast();
             Link<Point> first = yAxis.getFirst();
-            while (first.getData().getY() != arr[0].getY()){
-                yAxis.remove(0);
-                xAxis.remove(first.getData());
+            while (first != null && first.getData().getY() < min){
+                if(first.getPar().getNext()!= null) {
+                    first.getPar().getNext().setPrev(first.getPar().getPrev());
+                }
+                if(first.getPar().getPrev()!=null) {
+                    first.getPar().getPrev().setNext(first.getPar().getNext());
+                }
+                if(first.getNext()!=null) {
+                    first.getNext().setPrev(null);
+                }
+                if (first.getPar() == xAxis.getLast()){
+                    xAxis.setLast(first.getPar().getPrev());
+                }
+                yAxis.setFirst(first.getNext());
+                yAxis.sizeMinus1();
+                xAxis.sizeMinus1();
                 first = first.getNext();
             }
-            last = last.getNext();
+
             Link<Point> end = last;
-            while (last != null){
-                xAxis.remove(last.getData());
-                last = last.getNext();
+            while (last != null && last.getData().getY() > max){
+
+                if(last.getPar().getNext()!=null) {
+                    last.getPar().getNext().setPrev(last.getPar().getPrev());
+                }
+                if(last.getPar().getPrev()!=null) {
+                    last.getPar().getPrev().setNext(last.getPar().getNext());
+                }
+                if(last.getPrev()!=null) {
+                    last.getPrev().setNext(null);
+                }
+                if(last.getPar() == xAxis.getFirst()){
+                    xAxis.setFirst(last.getPar().getNext());
+                }
+                yAxis.setLast(last.getPrev());
+                yAxis.sizeMinus1();
+                xAxis.sizeMinus1();
+                last = last.getPrev();
             }
-            yAxis.setLast(end);
-            end.setNext(null);
         }
     }
 
@@ -260,104 +343,56 @@ public class DataStructure implements DT {
             return twoOrthree(arr);
 
 
-        return Afind(arr);
+        double minDis = Double.MAX_VALUE;
+        if(axis){
+            Arrays.sort(arr, new Comparator<Point>() {
+                @Override
+                public int compare(Point o1, Point o2) {
+                    return o1.getY() - o2.getY();
+                }
+            });
+
+            for(int i=0;i< arr.length-1;i++){
+                for (int j=1;j<7;j++){
+                    int index =  i+j;
+                    if(index<arr.length){
+                        if(distance(arr[i],arr[index]) < minDis){
+                            minDis = distance(arr[i],arr[index]);
+                            ans[0] = arr[i];
+                            ans[1] = arr[index];
+                        }
+                    }
+                }
+            }
+
+        }
+        else {
+            Arrays.sort(arr, new Comparator<Point>() {
+                @Override
+                public int compare(Point o1, Point o2) {
+                    return o1.getX() - o2.getX();
+                }
+            });
+
+            for(int i=0;i< arr.length-1;i++){
+                for (int j=1;j<7;j++){
+                    int index =  i+j;
+                    if(index<arr.length){
+                        if(distance(arr[i],arr[index]) < minDis){
+                            minDis = distance(arr[i],arr[index]);
+                            ans[0] = arr[i];
+                            ans[1] = arr[index];
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
     }
-
-
 
     //returns distance between two points
     public double distance(Point p1, Point p2){
         double ans = Math.sqrt((Math.pow(p1.getX() - p2.getX(),2)) + (Math.pow(p1.getY() - p2.getY(),2) ));
-        return ans;
-    }
-
-    public Point[] Afind(Point[] arr){
-        Point[] ans = new Point[2];
-        int len = arr.length;
-
-
-        if(len == 2 || len==3) {
-            return twoOrthree(arr); //function to base scenarios
-        }
-
-        int mid = len/2;
-
-        Point[] left = new Point[mid];
-        Point[] right = new Point[len - mid];
-        for(int i=0;i<mid;i++){ //initializing left array
-            left[i] = arr[i];
-        }
-        for(int i=0;i<len - mid;i++){ //initializing right array
-            right[i] = arr[i + mid];
-        }
-
-        left = Afind(left);
-        right = Afind(right);
-
-
-        double disLeft = distance(left[0],left[1]);
-        double disRight = distance(right[0],right[1]);
-        double min = Math.min(disLeft,disRight);
-        int int_min = (int) min;
-
-        if(disLeft==min){
-            ans[0] = left[0];
-            ans[1] = left[1];
-        }
-        else {
-            ans[0] = right[0];
-            ans[1] = right[1];
-        }
-
-        Point mid_array = arr[mid];
-        Point[] xcheck = getPointsInRangeRegAxis(mid_array.getX() -int_min,mid_array.getX() + int_min,true );
-        Point[] ycheck = getPointsInRangeRegAxis(mid_array.getY() - int_min,mid_array.getY() + int_min,false);
-
-
-        int i=0;//index of the mid in the xcheck array
-        int j=0; //index of the mid in the ycheck array
-        while(xcheck[i]!=mid_array)//found where mid array in xcheck array
-        {
-            i++;
-        }
-        while(ycheck[j]!=mid_array)//found where mid array in ycheck array
-        {
-            j++;
-        }
-
-        int i1; //for checking 3 points before and after in x axis
-        int j1; //for checking 3 points before and after in y axis
-
-        for(i1=-3;i1<4;i1++){
-            if (i1==0){
-                i1++;//dont check the same point
-            }
-            int index = i+i1;
-            if(index>=0 & index<xcheck.length){
-                double temp_dis = distance(mid_array,xcheck[index]);
-                if(temp_dis<min){
-                    min = temp_dis;
-                    ans[0] = mid_array;
-                    ans[1] = xcheck[index];
-                }
-            }
-        }
-
-        for (j1 = -3;j1<4;j1++){
-            if (j1==0){
-                j1++;//dont check the same point
-            }
-            int index = j+j1;
-            if(index>=0 & index<ycheck.length){
-                double temp_dis = distance(mid_array,ycheck[index]);
-                if(temp_dis<min){
-                    min = temp_dis;
-                    ans[0] = mid_array;
-                    ans[1] = ycheck[index];
-                }
-            }
-        }
-
         return ans;
     }
 

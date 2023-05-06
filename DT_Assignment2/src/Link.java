@@ -6,15 +6,17 @@ public class Link <E>{
 	private Link<E> prev;
 	
 	// ---------------------- constructors ----------------------
+	public Link(E data) {
+		this(data, null);
+	}
+
 	public Link(E data, Link<E> next) {
 		this.data = data;
 		this.next = next;
 		this.par = null;
 	}
 	
-	public Link(E data) {
-		this(data, null);
-	}
+
 
 	// ---------------------- Methods ----------------------
 	public Link<E> getNext() { 
@@ -35,12 +37,12 @@ public class Link <E>{
 		return tmp;
 	}
 
-	public void setPar(Link<E> par) {
-		this.par = par;
+	public void setPar(Link<E> para) {
+		this.par = para;
 	}
 
 	public Link<E> getPar() {
-		return par;
+		return this.par;
 	}
 
 	public Link<E> getPrev() {
