@@ -41,6 +41,13 @@ public class LinkedList<T> implements List<T> {
 			counter = counter + 1;
 		return counter;
 	}
+	public void sizeBy1(){
+		this.size++;
+	}
+	public void sizeMinus1(){
+		this.size--;
+	}
+
 	public int getSize(){
 		return size;
 	}
