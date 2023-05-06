@@ -27,7 +27,12 @@ public class DataStructure implements DT {
             System.out.println(x.getPar());
             System.out.println(x.getPrev().getPar());
         }
-
+        if(point.getY()==-200)
+        {
+            System.out.println(x.getPar());
+            System.out.println(x.getPrev().getPar());
+            System.out.println(xAxis.getFirst().getPar());
+        }
     }
 
     public Link<Point> addXPoint(Point point) {
