@@ -15,17 +15,6 @@ public class tester {
 
         System.out.println("checking the point in range methods, if its the same int then the order might change, dosent matter:");
 
-        System.out.println("narrowing the range to -4 to 5 in the x's:");
-        DS.narrowRange(-4,5,true);
-        System.out.println("should print now: -4,-200 1,1 2,2 4,5 5,-80");
-       // pir = DS.getPointsInRangeRegAxis(-4,5,true);
-        //printer(pir);
-
-        System.out.println("narrowing the range to -1 to 29 in the y's:");
-        DS.narrowRange(-1,30,false);
-        System.out.println("should print now: 1,1 2,2 4,5");
-      //  pir = DS.getPointsInRangeRegAxis(-4,5,true);
-       // printer(pir);
 
         Point[] pir = DS.getPointsInRangeRegAxis(2,100,false);
         System.out.println("range of y from 2 to 100 should print 2,2 4,5 8,8 -10,10 -5,20 500,100:");
@@ -57,15 +46,23 @@ public class tester {
         System.out.println(DS.getDensity()+1);
         System.out.println();
 
-
-
         System.out.println("printing the corrent structure by x's should be :");
         System.out.println("-10,10 -5,20 -4,-200 1,1 2,2 4,5 5,-80 8,8 10,-10 500,100 ");
         pir = DS.getPointsInRangeRegAxis(-500,500,true);
         printer(pir);
 
 
+        System.out.println("narrowing the range to -4 to 5 in the x's:");
+        DS.narrowRange(-4,5,true);
+        System.out.println("should print now: -4,-200 1,1 2,2 4,5 5,-80");
+        pir = DS.getPointsInRangeRegAxis(-4,5,true);
+        printer(pir);
 
+        System.out.println("narrowing the range to -1 to 29 in the y's:");
+        DS.narrowRange(-1,30,false);
+        System.out.println("should print now: 1,1 2,2 4,5");
+        pir = DS.getPointsInRangeRegAxis(-4,5,true);
+        printer(pir);
 
 
         System.out.println("checking getLargestAxism should be the x's so false:");

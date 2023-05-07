@@ -64,6 +64,19 @@ public class LinkedList<T> implements List<T> {
 		first = new Link<T>(element, first);
 		size++;
 	}
+
+
+	public void addFirst(Link<T> element) {
+		if (element == null)
+			throw new IllegalArgumentException("input argument is null");
+
+		Link<T> sec = first;
+		first = element;
+		element.setNext(sec);
+		sec.setPrev(element);
+		size++;
+	}
+
 	
 	//Returns the element at the specified position in this list.
 	public T get(int index) {

@@ -22,17 +22,6 @@ public class DataStructure implements DT {
         x.setPar(y);
         y.setPar(x);
 
-        if(point.getX()==2)
-        {
-            System.out.println(x.getPar());
-            System.out.println(x.getPrev().getPar());
-        }
-        if(point.getY()==-200)
-        {
-            System.out.println(x.getPar());
-            System.out.println(x.getPrev().getPar());
-            System.out.println(xAxis.getFirst().getPar());
-        }
     }
 
     public Link<Point> addXPoint(Point point) {
@@ -55,11 +44,12 @@ public class DataStructure implements DT {
                 newLink.setPrev(prev);
             }
             else if (curr == prev) {
-                xAxis.addFirst(newLink.getData());
+                xAxis.addFirst(newLink);
             }
             else {
                 xAxis.sizeBy1();
                 prev.setNext(newLink);
+                curr.setPrev(newLink);
                 newLink.setNext(curr);
                 newLink.setPrev(prev);
             }
@@ -87,11 +77,12 @@ public class DataStructure implements DT {
                 newLink.setPrev(prev);
             }
             else if (curr == prev) {
-                yAxis.addFirst(newLink.getData());
+                yAxis.addFirst(newLink);
             }
-             else {
-                 yAxis.sizeBy1();
+            else {
+                yAxis.sizeBy1();
                 prev.setNext(newLink);
+                curr.setPrev(newLink);
                 newLink.setNext(curr);
                 newLink.setPrev(prev);
             }
@@ -140,7 +131,7 @@ public class DataStructure implements DT {
                ans[i] = start.getData();
                start = start.getNext();
            }
-           System.out.println(xAxis.getFirst().getPar());
+
            return ans;
        }
     }
@@ -207,6 +198,32 @@ public class DataStructure implements DT {
         return ans;
     }
 
+    //Remove link from  Linkedlist ls
+    public void remove(Link<Point> p, LinkedList<Point> ls){
+        if(p==ls.getFirst()){
+            ls.setFirst(p.getNext());
+            if(p.getNext()!=null){
+                p.getNext().setPrev(null);
+            }
+        }
+        else if (p==ls.getLast()) {
+            ls.setLast(p.getPrev());
+            if(p.getPrev()!=null){
+                p.getPrev().setNext(null);
+            }
+        }
+        else if(p!= ls.getLast() & p!=ls.getFirst()) {
+            Link<Point> next = p.getNext();
+            Link<Point> prev = p.getPrev();
+            if (next!=null){
+                next.setPrev(prev);
+            }
+            if(prev !=null){
+                prev.setNext(next);
+            }
+        }
+    }
+
     @Override
     public void narrowRange(int min, int max, Boolean axis) {
         if(axis){
@@ -214,88 +231,41 @@ public class DataStructure implements DT {
             Link<Point> first = xAxis.getFirst();
 
             while (first != null && first.getData().getX() < min){
-
-                if(first.getPar().getNext()!= null) {
-                    first.getPar().getNext().setPrev(first.getPar().getPrev());
-                }
-                if(first.getPar().getPrev()!=null) {
-                    first.getPar().getPrev().setNext(first.getPar().getNext());
-                }
-                if(first.getNext()!=null) {
-                    first.getNext().setPrev(null);
-                }
-
-                if (first.getPar() == yAxis.getLast()){
-                    yAxis.setLast(first.getPar().getPrev());
-                }
-                xAxis.setFirst(first.getNext());
+                remove(first,xAxis);
+                remove(first.getPar(),yAxis);
                 xAxis.sizeMinus1();
                 yAxis.sizeMinus1();
-                first = first.getNext();
+                first = xAxis.getFirst();
             }
 
             Link<Point> end = last;
             while (last != null && last.getData().getX() > max){
-
-                if(last.getPar().getNext()!=null) {
-                    last.getPar().getNext().setPrev(last.getPar().getPrev());
-                }
-                if(last.getPar().getPrev()!=null) {
-                    last.getPar().getPrev().setNext(last.getPar().getNext());
-                }
-                if(last.getPrev()!=null) {
-                    last.getPrev().setNext(null);
-                }
-                if(last.getPar() == yAxis.getFirst()){
-                    yAxis.setFirst(last.getPar().getNext());
-                }
-                xAxis.setLast(last.getPrev());
+                remove(last,xAxis);
+                remove(last.getPar(),yAxis);
                 xAxis.sizeMinus1();
                 yAxis.sizeMinus1();
-                last = last.getPrev();
+                last = xAxis.getLast();
             }
         }
         else{
-            Link<Point> last = yAxis.getLast();
-            Link<Point> first = yAxis.getFirst();
+            Link<Point> last = xAxis.getLast();
+            Link<Point> first = xAxis.getFirst();
+
             while (first != null && first.getData().getY() < min){
-                if(first.getPar().getNext()!= null) {
-                    first.getPar().getNext().setPrev(first.getPar().getPrev());
-                }
-                if(first.getPar().getPrev()!=null) {
-                    first.getPar().getPrev().setNext(first.getPar().getNext());
-                }
-                if(first.getNext()!=null) {
-                    first.getNext().setPrev(null);
-                }
-                if (first.getPar() == xAxis.getLast()){
-                    xAxis.setLast(first.getPar().getPrev());
-                }
-                yAxis.setFirst(first.getNext());
+                remove(first,yAxis);
+                remove(first.getPar(),xAxis);
                 yAxis.sizeMinus1();
                 xAxis.sizeMinus1();
-                first = first.getNext();
+                first = yAxis.getFirst();
             }
 
             Link<Point> end = last;
             while (last != null && last.getData().getY() > max){
-
-                if(last.getPar().getNext()!=null) {
-                    last.getPar().getNext().setPrev(last.getPar().getPrev());
-                }
-                if(last.getPar().getPrev()!=null) {
-                    last.getPar().getPrev().setNext(last.getPar().getNext());
-                }
-                if(last.getPrev()!=null) {
-                    last.getPrev().setNext(null);
-                }
-                if(last.getPar() == xAxis.getFirst()){
-                    xAxis.setFirst(last.getPar().getNext());
-                }
-                yAxis.setLast(last.getPrev());
-                yAxis.sizeMinus1();
+                remove(last,yAxis);
+                remove(last.getPar(),xAxis);
                 xAxis.sizeMinus1();
-                last = last.getPrev();
+                yAxis.sizeMinus1();
+                last = yAxis.getLast();
             }
         }
     }
@@ -342,7 +312,7 @@ public class DataStructure implements DT {
         Point[] ans = new Point[2];
 
         if(len<2){
-            return new Point[2];
+            return new Point[0];
         }
         if(len == 2 || len == 3)
             return twoOrthree(arr);
