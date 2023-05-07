@@ -10,8 +10,9 @@ public class DataStructure implements DT {
     //////////////// DON'T DELETE THIS CONSTRUCTOR ////////////////
     public DataStructure()
     {
-        xAxis = new LinkedList<>();
-        yAxis = new LinkedList<>();
+        //Initializing two linked lists.
+        xAxis = new LinkedList<>(); //Sorted by his x value
+        yAxis = new LinkedList<>(); //Sorted by his y value
     }
 
     // par is a field of the parallel link in the other list (x->y, y->x)
@@ -37,16 +38,17 @@ public class DataStructure implements DT {
                 prev = curr;
                 curr = curr.getNext();
             }
-            if (curr == null){
+
+            if (curr == null){ //Case: we got to the last link
                 xAxis.sizeBy1();
                 xAxis.setLast(newLink);
                 prev.setNext(newLink);
                 newLink.setPrev(prev);
             }
-            else if (curr == prev) {
+            else if (curr == prev) { //Case: the first link X value is smaller than point X value
                 xAxis.addFirst(newLink);
             }
-            else {
+            else { //Case: somewhere in the middle of the list
                 xAxis.sizeBy1();
                 prev.setNext(newLink);
                 curr.setPrev(newLink);
@@ -70,16 +72,16 @@ public class DataStructure implements DT {
                 prev = curr;
                 curr = curr.getNext();
             }
-            if (curr == null){
+            if (curr == null){ //Case: we got to the last link
                 yAxis.sizeBy1();
                 yAxis.setLast(newLink);
                 prev.setNext(newLink);
                 newLink.setPrev(prev);
             }
-            else if (curr == prev) {
+            else if (curr == prev) { //Case: the first link X value is smaller than point X value
                 yAxis.addFirst(newLink);
             }
-            else {
+            else { //Case: somewhere in the middle of the list
                 yAxis.sizeBy1();
                 prev.setNext(newLink);
                 curr.setPrev(newLink);
@@ -92,21 +94,24 @@ public class DataStructure implements DT {
 
     @Override
     public Point[] getPointsInRangeRegAxis(int min, int max, Boolean axis) {
-       int count = 0;
+       int count = 0;//To count how much elements are there
        if(axis){
            Link<Point> curr = xAxis.getFirst();
-           while (curr != null && curr.getData().getX() < min){
+           while (curr != null && curr.getData().getX() < min){ // iterating all over the points that their x value is smaller than min
                curr = curr.getNext();
            }
+
            Link<Point> start = curr;
            Link<Point> end;
-           while (curr != null && curr.getData().getX() >= min && curr.getData().getX() <= max){
+
+           while (curr != null && curr.getData().getX() >= min && curr.getData().getX() <= max){// iterating all over the
+               // points that their x value is in between min and max value
                count = count + 1;
                end = curr;
                curr = curr.getNext();
            }
            Point[] ans = new Point[count];
-           for(int i = 0; i < ans.length; i++)
+           for(int i = 0; i < ans.length; i++)//Inserting the points into the array
            {
                ans[i] = start.getData();
                start = start.getNext();
@@ -115,18 +120,21 @@ public class DataStructure implements DT {
        }
        else {
            Link<Point> curr = yAxis.getFirst();
-           while (curr != null && curr.getData().getY() < min){
+           while (curr != null && curr.getData().getY() < min){ // iterating all over the points that their y value is smaller than min
                curr = curr.getNext();
            }
+
            Link<Point> start = curr;
            Link<Point> end;
-           while (curr != null && curr.getData().getY() >= min && curr.getData().getY() <= max){
+
+           while (curr != null && curr.getData().getY() >= min && curr.getData().getY() <= max){// iterating all over the
+               // points that their y value is in between min and max value
                count = count + 1;
                end = curr;
                curr = curr.getNext();
            }
            Point[] ans = new Point[count];
-           for(int i = 0; i < ans.length; i++)
+           for(int i = 0; i < ans.length; i++) //Inserting the points into the array
            {
                ans[i] = start.getData();
                start = start.getNext();
@@ -141,7 +149,7 @@ public class DataStructure implements DT {
         int count = 0;
         if(axis){
             Iterator<Point> it1 = yAxis.iterator();
-            while(it1.hasNext()){
+            while(it1.hasNext()){//iterating over y-axis to get the number of the points that is legal
                 Point p = it1.next();
                 if (p.getX()>=min & p.getX()<=max)
                     count++;
@@ -149,7 +157,7 @@ public class DataStructure implements DT {
 
             Point[] ans = new Point[count];
             int i =0;
-            Iterator<Point> it2 = yAxis.iterator();
+            Iterator<Point> it2 = yAxis.iterator();//Inserting the points into array
             while(it2.hasNext()){
                 Point p = it2.next();
                 if((p.getX()>=min & p.getX()<=max)){
@@ -160,7 +168,7 @@ public class DataStructure implements DT {
             return ans;
         }
         else{
-            Iterator<Point> it1 = xAxis.iterator();
+            Iterator<Point> it1 = xAxis.iterator();//iterating over x-axis to get the number of the points that is legal
             while(it1.hasNext()){
                 Point p = it1.next();
                 if (p.getY()>=min & p.getY()<=max)
@@ -169,7 +177,7 @@ public class DataStructure implements DT {
 
             Point[] ans = new Point[count];
             int i =0;
-            Iterator<Point> it2 = xAxis.iterator();
+            Iterator<Point> it2 = xAxis.iterator();//Inserting the points into array
             while(it2.hasNext()){
                 Point p = it2.next();
                 if((p.getY()>=min & p.getY()<=max)){
@@ -184,35 +192,35 @@ public class DataStructure implements DT {
     @Override
     public double getDensity() {
         double ans;
-        double n = (double) xAxis.getSize();
+        double n = (double) xAxis.getSize(); //Casting
         int xMin = xAxis.getFirst().getData().getX();
         int xMax = xAxis.getLast().getData().getX();
         int yMin = yAxis.getFirst().getData().getY();
         int yMax = yAxis.getLast().getData().getY();
         int disX = xMax - xMin;
-        double dX = (double) disX;
+        double dX = (double) disX; //Casting
         int disY = yMax - yMin;
-        double dY = (double) disY;
+        double dY = (double) disY; //Casting
 
-        ans = n/(disX*disY);
+        ans = n/(disX*disY); //return in double the Density
         return ans;
     }
 
     //Remove link from  Linkedlist ls
     public void remove(Link<Point> p, LinkedList<Point> ls){
-        if(p==ls.getFirst()){
+        if(p==ls.getFirst()){ //Remove first element
             ls.setFirst(p.getNext());
             if(p.getNext()!=null){
                 p.getNext().setPrev(null);
             }
         }
-        else if (p==ls.getLast()) {
+        else if (p==ls.getLast()) { //Remove last element
             ls.setLast(p.getPrev());
             if(p.getPrev()!=null){
                 p.getPrev().setNext(null);
             }
         }
-        else if(p!= ls.getLast() & p!=ls.getFirst()) {
+        else if(p!= ls.getLast() & p!=ls.getFirst()) { //Remove element in the middle
             Link<Point> next = p.getNext();
             Link<Point> prev = p.getPrev();
             if (next!=null){
@@ -230,6 +238,7 @@ public class DataStructure implements DT {
             Link<Point> last = xAxis.getLast();
             Link<Point> first = xAxis.getFirst();
 
+            //removing the links their x Value smaller than min
             while (first != null && first.getData().getX() < min){
                 remove(first,xAxis);
                 remove(first.getPar(),yAxis);
@@ -239,6 +248,8 @@ public class DataStructure implements DT {
             }
 
             Link<Point> end = last;
+
+            //removing the links their x Value larger than min
             while (last != null && last.getData().getX() > max){
                 remove(last,xAxis);
                 remove(last.getPar(),yAxis);
@@ -251,6 +262,7 @@ public class DataStructure implements DT {
             Link<Point> last = xAxis.getLast();
             Link<Point> first = xAxis.getFirst();
 
+            //removing the links their y Value smaller than min
             while (first != null && first.getData().getY() < min){
                 remove(first,yAxis);
                 remove(first.getPar(),xAxis);
@@ -260,6 +272,7 @@ public class DataStructure implements DT {
             }
 
             Link<Point> end = last;
+            //removing the links their y Value larger than min
             while (last != null && last.getData().getY() > max){
                 remove(last,yAxis);
                 remove(last.getPar(),xAxis);
@@ -288,10 +301,11 @@ public class DataStructure implements DT {
         else
             index = (index-1)/2;
         if(axis){
-            ans = xAxis.get(index);
+            ans = xAxis.get(index); //Linkedlist get by index
+            //O(n)
         }
         else
-            ans = yAxis.get(index);
+            ans = yAxis.get(index);//O(n)
         return new Container(ans);
     }
 
@@ -365,7 +379,7 @@ public class DataStructure implements DT {
         return ans;
     }
 
-    //returns distance between two points
+    //Returns distance between two points
     public double distance(Point p1, Point p2){
         double ans = Math.sqrt((Math.pow(p1.getX() - p2.getX(),2)) + (Math.pow(p1.getY() - p2.getY(),2) ));
         return ans;
@@ -446,7 +460,7 @@ public class DataStructure implements DT {
         Point[] check = nearestPairInStrip(mid,2*minDist,axis);
 
         //Step 6 : A
-        if(check[0] != null) {
+        if(check.length != 0) {
             double temp_dis = distance(check[0], check[1]);
             if (temp_dis < minDist) {
                 return check;

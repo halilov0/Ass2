@@ -4,9 +4,9 @@ import java.util.NoSuchElementException;
 public class LinkedList<T> implements List<T> {
 	
 	// ---------------------- fields ---------------------- 
-	private Link<T> first;
-	private Link<T> last;
-	private int size;
+	private Link<T> first; //first element in the list
+	private Link<T> last; //last element in the list
+	private int size; //the size of the list in O(n)
 	
 	// ---------------------- constructors ----------------------
 	public LinkedList(){		
@@ -34,16 +34,22 @@ public class LinkedList<T> implements List<T> {
 		this.last = last;
 	}
 
+
 	//Returns the number of elements in this list
+	//O(n)
 	public int size() {
 		int counter = 0;
 		for(Link<T> curr = first; curr != null; curr = curr.getNext())
 			counter = counter + 1;
 		return counter;
 	}
+
+	//Increase size by 1
 	public void sizeBy1(){
 		this.size++;
 	}
+
+	//Reduce size by 1
 	public void sizeMinus1(){
 		this.size--;
 	}
@@ -51,12 +57,14 @@ public class LinkedList<T> implements List<T> {
 	public int getSize(){
 		return size;
 	}
-	
+
+
 	//Returns true if this list contains no elements.
 	public boolean isEmpty() {
 		return first == null;
 	}
-	
+
+
 	//Adds element to the beginning of this list
 	public void addFirst(T element) {
 		if (element == null)
@@ -65,7 +73,7 @@ public class LinkedList<T> implements List<T> {
 		size++;
 	}
 
-
+    //Add first link to the linked list
 	public void addFirst(Link<T> element) {
 		if (element == null)
 			throw new IllegalArgumentException("input argument is null");
@@ -161,7 +169,8 @@ public class LinkedList<T> implements List<T> {
 		current.setData(element);
 		return prev;
 	}
-	
+
+	//Remove T element by his element
     public T remove(int index) {
 		if(!rangeCheck(index))
 			throw new IllegalArgumentException("Index: " + index + ", Size: " + size());
